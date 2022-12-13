@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Users);
       this.belongsToMany(models.Users, {
         through: 'LikedPosts',
-        as: 'LikedPosts',
+        as: 'likePostId',
         updatedAt: false,
       });
     }
