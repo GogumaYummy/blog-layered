@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development PORT=3000 nodemon src/app.js",
+    "dev": "cross-env NODE_ENV=development nodemon src/app.js",
     "test": "cross-env NODE_ENV=test jest --forceExit",
     "test:silent": "cross-env NODE_ENV=test jest --silent --forceExit",
     "test:coverage": "cross-env NODE_ENV=test jest --coverage --forceExit",
