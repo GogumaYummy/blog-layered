@@ -8,6 +8,7 @@ module.exports = {
     database: DB_DATABASE,
     host: DB_HOST,
     dialect: 'mysql',
+    logging: false,
   },
   test: {
     username: DB_USER,
