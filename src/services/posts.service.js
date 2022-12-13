@@ -35,6 +35,7 @@ class PostsService {
         title: post.title,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
+        // User: post.User,
       };
     });
   };

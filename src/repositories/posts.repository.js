@@ -15,6 +15,7 @@ class PostsRepository {
   };
 
   findAllPosts = async () => {
+    console.log('테스트');
     const posts = await this.postsModel.findAll({
       attributes: [
         'id',
@@ -25,12 +26,11 @@ class PostsRepository {
         'updatedAt',
       ],
       include: [
-        { model: Users, attributes: ['id', 'nickname'] },
-        { model: Users, as: 'LikedPosts', attributes: [] },
+        { model: Users, attributes: ['UserId'] },
+        { model: Users, as: 'likeUserId', attributes: [] },
         { model: Comments, attributes: [] },
       ],
     });
-
     return posts;
   };
 }
