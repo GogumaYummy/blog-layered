@@ -7,10 +7,7 @@ const errorConverter = (err, req, res, next) => {
 };
 
 const errorLogger = (err, req, res, next) => {
-  logger.log({
-    level: 'error',
-    message: err.stack,
-  });
+  logger.log({ level: 'error', message: err.stack });
   next(err);
 };
 
