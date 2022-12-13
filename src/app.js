@@ -1,11 +1,11 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const { urlencoded } = require('express');
 const morgan = require('morgan');
-const dotenv = require('dotenv');
 const api = require('./routes');
 const logger = require('./config/logger');
-dotenv.config();
 const db = require('./models');
 const {
   errorConverter,
