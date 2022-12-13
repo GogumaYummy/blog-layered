@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Comments);
       this.belongsToMany(models.Posts, {
         through: 'LikedPosts',
+        as: 'likeUserId',
         updatedAt: false,
       });
     }
