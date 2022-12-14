@@ -1,4 +1,4 @@
-class UserRepository {
+class AuthRepository {
   /**
    * @param {import('sequelize').Model} UserModel - The user model created by sequelize
    */
@@ -25,4 +25,4 @@ class UserRepository {
   };
 }
 
-module.exports = UserRepository;
+module.exports = AuthRepository;
