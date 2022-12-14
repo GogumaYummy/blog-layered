@@ -1,5 +1,3 @@
-const logger = require('../config/logger');
-
 class UserRepository {
   /**
    * @param {import('sequelize').Model} UserModel - The user model created by sequelize
@@ -22,7 +20,7 @@ class UserRepository {
    * @returns {Promise<import('sequelize').Model> | Promise<undefined>} Found user model, or undefined if not found.
    */
   getUserByEmail = async (email) => {
-    const user = await this.Model.findOne({ where: { email: email } });
+    const user = await this.Model.findOne({ where: { email } });
     return user;
   };
 }

@@ -1,17 +1,18 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const logger = require('../config/logger');
 const { Users } = require('../models');
 const UserRepository = require('../repositories/user.repository');
 const { ApiError } = require('../utils/apiError');
-
 const PASSWORD_SALT = parseInt(process.env.PASSWORD_SALT);
+const { JWT_SECRET } = process.env;
 
 class UserService {
   constructor() {
     this.userRepository = new UserRepository(Users);
   }
   /**
-   * Create a new user if email is not exist .
+   * Create a new user if the email is not exist .
    * @param {String} email - Email to login
    * @param {String} nickname - Nickname to display
    * @param {String} password - Password to login
@@ -24,9 +25,26 @@ class UserService {
     const existUser = await this.userRepository.getUserByEmail(email);
     if (existUser) throw new ApiError('이미 가입된 이메일입니다.', 400);
 
-    const hashedPassword = await bcrypt.hash(password, PASSWORD_SALT);
+    const hashedPassword = await bcrypt.hash(password, parseInt(PASSWORD_SALT));
 
     await this.userRepository.createUser(email, nickname, hashedPassword);
+  };
+  /**
+   * Find the user registered by the email, compare password and return a signed access token.
+   * @param {String} email - Email to login
+   * @param {String} password - Password to login
+   * @returns {Promise<String>} - Signed access token
+   */
+  login = async (email, password) => {
+    const user = await this.userRepository.getUserByEmail(email);
+    if (!user) throw new ApiError('이메일 또는 비밀번호가 틀렸습니다.', 400);
+
+    const comparisonResult = await bcrypt.compare(password, user.password);
+
+    if (!comparisonResult)
+      throw new ApiError('이메일 또는 비밀번호가 틀렸습니다.', 400);
+
+    return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: 60 * 60 });
   };
 }
 
