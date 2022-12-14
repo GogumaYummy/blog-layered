@@ -1,51 +1,45 @@
-
-const { assertCallExpression } = require('babel-types');
 const LikesService = require('../services/like.service.js');
-const { ApiError } = require('../utils/apiError');
 
+class LikesController {
+  LikesService = new LikesService();
 
+  getlikelist = async (req, res, next) => {
+    try {
+      const {userId} = req.params;
 
-class LikesController{
+      const posts = await this.LikesService.getlikelist(userId);
 
-   
-    LikesService = new LikesService();
-
-    
-    getlikelist = async (req, res, next) => {
-        try{
-            const UserId = res.locals.userId;
-            
-
-
-        }catch{
-
-
-        }
-
+      res.status(201).json({  posts });
+    } catch (err) {
+      next(err);
     }
+  };
 
+  postlike = async (req, res, next) => {
+    try {
+      const { postId } = req.params;
+      const { userId } = res.locals;
 
-    
+      await this.LikesService.postlike(postId, userId);
 
-    deletdlike = async (req, res, next) => {
-
-
+      res.status(201).json({ message: '게시글의 좋아요를 등록하였습니다.' });
+    } catch (err) {
+      next(err);
     }
+  };
 
+  deletdlike = async (req, res, next) => {
+    try {
+      const { postId } = req.params;
+      const { userId } = res.locals;
 
+      await this.LikesService.deletdlike(postId, userId);
 
-    deletdlike = async (req, res, next) => {
-
-
+      res.status(200).json({ message: '게시글의 좋아요를 취소하였습니다.' });
+    } catch (err) {
+      next(err);
     }
-
-
-
-
-
-
+  };
 }
-
-
 
 module.exports = LikesController;
