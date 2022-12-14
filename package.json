@@ -8,8 +8,8 @@
     "test": "cross-env NODE_ENV=test jest --forceExit",
     "test:silent": "cross-env NODE_ENV=test jest --silent --forceExit",
     "test:coverage": "cross-env NODE_ENV=test jest --coverage --forceExit",
-    "test:unit": "cross-env NODE_ENV=test jest src/__tests__/unit --forceExit",
-    "test:integration": "cross-env NODE_ENV=test jest src/__tests__/integration --forceExit"
+    "test:unit": "cross-env NODE_ENV=test jest src/test/unit --forceExit",
+    "test:integration": "cross-env NODE_ENV=test jest src/test/integration --forceExit"
   },
   "keywords": [],
   "author": "",
