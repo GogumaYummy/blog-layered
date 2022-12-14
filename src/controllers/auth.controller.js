@@ -1,7 +1,10 @@
-const Joi = require('joi');
-
 const AuthService = require('../services/auth.service');
 const { ApiError } = require('../utils/apiError');
+const {
+  registerRequestSchema,
+  loginRequestSchema,
+  loginResponseSchema,
+} = require('../validations/auth.validation');
 
 class AuthController {
   constructor() {
@@ -15,17 +18,8 @@ class AuthController {
    */
   register = async (req, res, next) => {
     try {
-      Joi.object()
-        .keys({
-          email: Joi.string().email().required(),
-          nickname: Joi.string()
-            .regex(/^[A-Za-z각-힣\d]{3,10}$/)
-            .required(),
-          password: Joi.string().min(4).max(16).required(),
-        })
-        .validate(req.body);
-
-      const { email, nickname, password, confirm } = req.body;
+      const { email, nickname, password, confirm } =
+        await registerRequestSchema.validateAsync(req.body);
 
       await this.authService.register(email, nickname, password, confirm);
 
@@ -43,20 +37,13 @@ class AuthController {
    */
   login = async (req, res, next) => {
     try {
-      await Joi.object()
-        .keys({
-          email: Joi.string().required(),
-          password: Joi.string().required(),
-        })
-        .validateAsync(req.body);
-
-      const { email, password } = req.body;
+      const { email, password } = await loginRequestSchema.validateAsync(
+        req.body,
+      );
 
       const accessToken = await this.authService.login(email, password);
 
-      await Joi.string()
-        .regex(/^[\w\d]+\.[\w\d]+\.[\w\d]+$/)
-        .validateAsync(accessToken);
+      await loginResponseSchema.validateAsync(accessToken);
 
       res.status(200).json({ message: '로그인에 성공했습니다.', accessToken });
     } catch (err) {
