@@ -33,8 +33,8 @@ app.use(urlencoded({ extended: true }));
 
 app.use('/', api);
 
-app.use(errorConverter);
 app.use(errorLogger);
+app.use(errorConverter);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
