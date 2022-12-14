@@ -1,9 +1,9 @@
-const UserService = require('../services/user.service');
+const AuthService = require('../services/auth.service');
 const { ApiError } = require('../utils/apiError');
 
-class UserController {
+class AuthController {
   constructor() {
-    this.userService = new UserService();
+    this.authService = new AuthService();
   }
   /**
    * A middleware to register.
@@ -19,7 +19,7 @@ class UserController {
       if (!email || !nickname || !password || !confirm)
         throw new ApiError('잘못된 요청입니다.', 400);
 
-      await this.userService.register(email, nickname, password, confirm);
+      await this.authService.register(email, nickname, password, confirm);
 
       res.status(200).json({ message: '회원 가입에 성공했습니다.' });
     } catch (err) {
@@ -40,7 +40,7 @@ class UserController {
       //TODO: joi로 대체할 예정
       if (!email || !password) throw new ApiError('잘못된 요청입니다.', 400);
 
-      const accessToken = await this.userService.login(email, password);
+      const accessToken = await this.authService.login(email, password);
       res.status(200).json({ message: '로그인에 성공했습니다.', accessToken });
     } catch (err) {
       next(err);
@@ -48,4 +48,4 @@ class UserController {
   };
 }
 
-module.exports = UserController;
+module.exports = AuthController;
