@@ -18,7 +18,7 @@ const { PORT } = process.env;
 const app = express();
 
 db.sequelize
-  .sync({ force: false, alter: true })
+  .sync({ force: false, alter: false })
   .then(() => {
     logger.info('MySQL connect success');
   })

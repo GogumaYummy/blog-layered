@@ -3,25 +3,27 @@ const { ApiError } = require('../utils/apiError');
 const logger = require('../config/logger');
 
 class PostsController {
-  constructor() {
-    this.postsService = new PostsService();
-  }
+  // constructor() {
+  //   this.postsService = new PostsService();
+  // }
+  postsService = new PostsService();
 
   createPost = async (req, res, next) => {
     try {
       // const { UserId } = res.locals.user;
-      const { UserId, title, content } = req.body;
+      const { UserId, title, content, image } = req.body;
 
-      if (!title) {
-        throw new ApiError('게시글 제목을 입력해주세요.');
+      if (!title || !content) {
+        throw new ApiError('게시글 제목/내용을 입력해주세요.');
       }
-
-      const post = this.postsService.createPost({
+      const createPostData = await this.postsService.createPost(
         UserId,
         title,
         content,
-      });
-      res.json({ data: post });
+        image,
+      );
+
+      res.status(201).json({ data: createPostData });
     } catch (err) {
       logger.error(err);
     }
@@ -30,7 +32,6 @@ class PostsController {
   getPosts = async (req, res, next) => {
     try {
       const posts = await this.postsService.findAllPosts();
-
       res.status(200).json({ posts: posts });
     } catch (err) {
       logger.error(err);
