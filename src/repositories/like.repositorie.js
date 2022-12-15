@@ -4,6 +4,13 @@ const router = express.Router();
 const { LikedPost } = require('../models');
 const { Users, Posts } = require('../models');
 
+// class PostsRepository {
+//   constructor(PostsModel, UsersModel, CommentsModel) {
+//     this.postsModel = PostsModel;
+//     this.usersModel = UsersModel;
+//     this.commentsModel = CommentsModel;
+//   }
+
 class LikeRepository {
   getlikelist = async (userId) => {
     const user = await Users.findByPk(userId);
