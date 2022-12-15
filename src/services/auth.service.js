@@ -1,6 +1,3 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const logger = require('../config/logger');
 const { Users } = require('../models');
 const AuthRepository = require('../repositories/auth.repository');
 const { ApiError } = require('../utils/apiError');
@@ -8,8 +5,10 @@ const PASSWORD_SALT = parseInt(process.env.PASSWORD_SALT);
 const { JWT_SECRET } = process.env;
 
 class AuthService {
-  constructor() {
+  constructor(bcryptModule, jwtModule) {
     this.authRepository = new AuthRepository(Users);
+    this.bcrypt = bcryptModule;
+    this.jwt = jwtModule;
   }
   /**
    * Create a new user if the email is not exist .
@@ -25,7 +24,10 @@ class AuthService {
     const existUser = await this.authRepository.getUserByEmail(email);
     if (existUser) throw new ApiError('이미 가입된 이메일입니다.', 400);
 
-    const hashedPassword = await bcrypt.hash(password, parseInt(PASSWORD_SALT));
+    const hashedPassword = await this.bcrypt.hash(
+      password,
+      parseInt(PASSWORD_SALT),
+    );
 
     await this.authRepository.createUser(email, nickname, hashedPassword);
   };
@@ -39,12 +41,14 @@ class AuthService {
     const user = await this.authRepository.getUserByEmail(email);
     if (!user) throw new ApiError('이메일 또는 비밀번호가 틀렸습니다.', 400);
 
-    const comparisonResult = await bcrypt.compare(password, user.password);
+    const comparisonResult = await this.bcrypt.compare(password, user.password);
 
     if (!comparisonResult)
       throw new ApiError('이메일 또는 비밀번호가 틀렸습니다.', 400);
 
-    return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: 60 * 60 });
+    return this.jwt.sign({ userId: user.id }, JWT_SECRET, {
+      expiresIn: 60 * 60,
+    });
   };
 }
 
