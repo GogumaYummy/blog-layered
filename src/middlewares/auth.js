@@ -11,6 +11,8 @@ const { JWT_SECRET } = process.env;
 const isLoggedIn = (req, res, next) => {
   try {
     const { authorization } = req.headers;
+    if (!authorization)
+      return next(new ApiError('로그인이 필요한 기능입니다.', 401));
 
     const [type, credentials] = authorization.split(' ');
     if (type !== 'Bearer') throw new ApiError('잘못된 요청입니다', 400);
