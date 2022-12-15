@@ -1,6 +1,7 @@
 const supertest = require('supertest');
 const app = require('../../src/app');
-const { Posts } = require('../../src/models');
+const db = require('../../src/models');
+
 const {
   createPostInsertSchemaByController,
   createPostRegister,
@@ -12,7 +13,7 @@ const {
 
 beforeAll(async () => {
   if (process.env.NODE_ENV === 'test') {
-    await Posts.destroy({ where: {} });
+    await db.sequelize.sync();
     // Users table 삭제하면 매번 계정 정보 새로 만들어야해서 적용 안함
     // await Users.destroy({ where: {} });
   } else throw new Error('NODE_ENV가 test로 설정되어 있지 않습니다.');
@@ -81,7 +82,7 @@ describe('Posts Domain', () => {
     const postId = JSON.parse(posts.text).posts[0]['id'];
 
     // req.params로 postId 보내기
-    const response = await supertest(app).get('/posts/' + postId);
+    const response = await supertest(app).get('/posts/' + postId); // /posts/:postId
 
     const responseByJson = JSON.parse(response.text).post;
 
@@ -232,4 +233,10 @@ describe('Posts Domain', () => {
       message: '게시글 삭제에 성공했습니다.',
     });
   });
+});
+
+afterAll(async () => {
+  if (process.env.NODE_ENV === 'test') {
+    await db.sequelize.sync({ force: true });
+  } else throw new Error('NODE_ENV가 test로 설정되어 있지 않습니다.');
 });
