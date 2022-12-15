@@ -14,4 +14,6 @@ exports.loginRequestSchema = Joi.object().keys({
   password: Joi.string().required(),
 });
 
-exports.loginResponseSchema = Joi.string().regex(/^[\w\d]+\.[\w\d]+\.[\w\d]+$/);
+exports.loginResponseSchema = Joi.string().regex(
+  /^[\w\d-_]+\.[\w\d-_]+\.[\w\d-_]+$/,
+);
