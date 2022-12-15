@@ -1,4 +1,6 @@
 const AuthService = require('../services/auth.service');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const {
   registerRequestSchema,
   loginRequestSchema,
@@ -7,7 +9,7 @@ const {
 
 class AuthController {
   constructor() {
-    this.authService = new AuthService();
+    this.authService = new AuthService(bcrypt, jwt);
   }
   /**
    * A middleware to register.
@@ -24,6 +26,7 @@ class AuthController {
 
       res.status(200).json({ message: '회원 가입에 성공했습니다.' });
     } catch (err) {
+      console.log(err);
       next(err);
     }
   };
