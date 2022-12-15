@@ -1,4 +1,5 @@
 const dotenv = require('dotenv');
+
 dotenv.config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
@@ -8,6 +9,8 @@ const api = require('./routes');
 const logger = require('./config/logger');
 const db = require('./models');
 const rateLimiter = require('./middlewares/rateLimiter');
+const helmet = require('helmet');
+const cors = require('cors');
 const {
   errorConverter,
   errorLogger,
@@ -28,7 +31,9 @@ db.sequelize
   });
 
 app.use(
-  morgan(env === 'production' ? 'combined' : 'dev', { stream: logger.stream }),
+  morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev', {
+    stream: logger.stream,
+  }),
 );
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
