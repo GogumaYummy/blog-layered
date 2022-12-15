@@ -1,5 +1,4 @@
 const AuthService = require('../services/auth.service');
-const { ApiError } = require('../utils/apiError');
 const {
   registerRequestSchema,
   loginRequestSchema,

@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const logger = require('../config/logger');
 const { Users } = require('../models');
 const AuthRepository = require('../repositories/auth.repository');
 const { ApiError } = require('../utils/apiError');
