@@ -41,6 +41,7 @@ app.listen(PORT, () => {
   logger.info(`${PORT} 포트로 서버가 열렸습니다.`);
 });
 
+module.exports = app;
 // console.log('dd');
 // logger.info('dd');
 // try {

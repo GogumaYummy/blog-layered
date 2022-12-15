@@ -1,30 +1,27 @@
 const PostsRepository = require('../repositories/posts.repository.js');
 const { Posts, Users, Comments } = require('../models/index.js');
+const { ApiError } = require('../utils/apiError');
 class PostsService {
   postsRepository = new PostsRepository(Posts, Users, Comments);
 
-  createPost = async (UserId, title, content, image) => {
-    const createPostData = await this.postsRepository.createPost(
+  createPost = async ({ UserId, title, content, image }) => {
+    await this.postsRepository.createPost({
       UserId,
       title,
       content,
       image,
-    );
+    });
 
     return true;
   };
 
-  findAllPosts = async () => {
-    const allPosts = await this.postsRepository.findAllPosts();
+  findAllPosts = async ({}) => {
+    const allPosts = await this.postsRepository.findAllPosts({});
 
     if (!allPosts) {
       return null;
     } else {
-      allPosts.sort((a, b) => {
-        return b.id - a.id;
-      });
-
-      return allPosts.map((post) => {
+      const posts = allPosts.map((post) => {
         return {
           id: post.id,
           title: post.title,
@@ -35,16 +32,18 @@ class PostsService {
           User: post.dataValues.User,
         };
       });
+
+      return posts;
     }
   };
 
-  findPostById = async (postId) => {
-    const findPost = await this.postsRepository.findPostById(postId);
+  findPostById = async ({ postId }) => {
+    const findPost = await this.postsRepository.findPostById({ postId });
 
     if (!findPost) {
-      return null;
+      throw new ApiError('게시글이 존재하지 않습니다.', 400);
     } else {
-      return {
+      const post = {
         id: findPost.id,
         title: findPost.title,
         content: findPost.content,
@@ -55,17 +54,19 @@ class PostsService {
         updatedAt: findPost.updatedAt,
         User: findPost.dataValues.User,
       };
+
+      return post;
     }
   };
 
-  updatePost = async (postId, title, content) => {
-    await this.postsRepository.updatePost(postId, title, content);
+  updatePost = async ({ postId, title, content }) => {
+    await this.postsRepository.updatePost({ postId, title, content });
 
     return true;
   };
 
-  deletePost = async (postId) => {
-    await this.postsRepository.deletePost(postId);
+  deletePost = async ({ postId }) => {
+    await this.postsRepository.deletePost({ postId });
 
     return true;
   };

@@ -5,7 +5,7 @@ class PostsRepository {
     this.commentsModel = CommentsModel;
   }
 
-  createPost = async (UserId, title, content, image) => {
+  createPost = async ({ UserId, title, content, image }) => {
     await this.postsModel.create({
       UserId,
       title,
@@ -15,7 +15,7 @@ class PostsRepository {
     return true;
   };
 
-  findAllPosts = async () => {
+  findAllPosts = async ({}) => {
     const posts = await this.postsModel.findAll({
       attributes: ['id', 'title', 'createdAt', 'updatedAt'],
       include: [
@@ -27,11 +27,13 @@ class PostsRepository {
         { model: this.usersModel, as: 'likePostId', attributes: ['id'] },
         { model: this.commentsModel, as: 'Comments', attributes: ['PostId'] }, // Comments가 belongsTo여서 Comments로 써야함
       ],
+      order: [['createdAt', 'DESC']],
     });
+
     return posts;
   };
 
-  findPostById = async (postId) => {
+  findPostById = async ({ postId }) => {
     const post = await this.postsModel.findOne({
       where: { id: postId },
       attributes: ['id', 'title', 'content', 'image', 'createdAt', 'updatedAt'],
@@ -49,13 +51,13 @@ class PostsRepository {
     return post;
   };
 
-  updatePost = async (postId, title, content) => {
+  updatePost = async ({ postId, title, content }) => {
     await this.postsModel.update({ title, content }, { where: { id: postId } });
 
     return true;
   };
 
-  deletePost = async (postId) => {
+  deletePost = async ({ postId }) => {
     await this.postsModel.destroy({ where: { id: postId } });
 
     return true;
