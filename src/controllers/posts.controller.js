@@ -13,7 +13,7 @@ class PostsController {
       if (!title || !content) {
         throw new ApiError('게시글 제목/내용을 입력해주세요.', 400);
       }
-      await this.postsService.createPost(UserId, title, content, image);
+      await this.postsService.createPost({ UserId, title, content, image });
 
       res.status(201).json({ message: '게시글 작성에 성공했습니다.' });
     } catch (err) {
@@ -23,7 +23,7 @@ class PostsController {
 
   getPosts = async (req, res, next) => {
     try {
-      const posts = await this.postsService.findAllPosts();
+      const posts = await this.postsService.findAllPosts({});
       res.status(200).json({ posts: posts });
     } catch (err) {
       next(err);
@@ -35,10 +35,7 @@ class PostsController {
       const { postId } = req.params;
 
       // 게시글 존재하는지 확인
-      const post = await this.postsService.findPostById(postId);
-      if (!post) {
-        throw new ApiError('게시글이 존재하지 않습니다.', 400);
-      }
+      const post = await this.postsService.findPostById({ postId });
 
       res.status(200).json({ post });
     } catch (err) {
@@ -53,10 +50,7 @@ class PostsController {
       const { title, content } = req.body;
 
       // 게시글 존재하는지 확인
-      const post = await this.postsService.findPostById(postId);
-      if (!post) {
-        throw new ApiError('게시글이 존재하지 않습니다.', 400);
-      }
+      const post = await this.postsService.findPostById({ postId });
 
       // 로그인한 계정이 게시글 작성자인지 확인
       if (post.User.id !== UserId) {
@@ -68,7 +62,7 @@ class PostsController {
         throw new ApiError('게시글 제목/내용을 입력해주세요.', 400);
       }
 
-      await this.postsService.updatePost(postId, title, content);
+      await this.postsService.updatePost({ postId, title, content });
 
       res.status(200).json({ message: '게시글 수정에 성공했습니다.' });
     } catch (err) {
@@ -82,17 +76,14 @@ class PostsController {
       const { postId } = req.params;
 
       // 게시글 존재하는지 확인
-      const post = await this.postsService.findPostById(postId);
-      if (!post) {
-        throw new ApiError('게시글이 존재하지 않습니다.', 400);
-      }
+      const post = await this.postsService.findPostById({ postId });
 
       // 로그인한 계정이 게시글 작성자인지 확인
       if (post.User.id !== UserId) {
         throw new ApiError('게시글 작성자가 아닙니다.', 400);
       }
 
-      await this.postsService.deletePost(postId);
+      await this.postsService.deletePost({ postId });
 
       res.status(200).json({ message: '게시글 삭제에 성공했습니다.' });
     } catch (err) {

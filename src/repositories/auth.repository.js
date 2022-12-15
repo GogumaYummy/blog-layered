@@ -3,7 +3,7 @@ class AuthRepository {
    * @param {import('sequelize').Model} UserModel - The user model created by sequelize
    */
   constructor(UserModel) {
-    this.Model = UserModel;
+    this.usersModel = UserModel;
   }
   /**
    * Create a new user in DB.
@@ -12,7 +12,7 @@ class AuthRepository {
    * @param {string} hashedPassword - Hashed password to save
    */
   createUser = async (email, nickname, hashedPassword) => {
-    await this.Model.create({ email, nickname, password: hashedPassword });
+    await this.usersModel.create({ email, nickname, password: hashedPassword });
   };
   /**
    * Get user model from the database by email.
@@ -20,7 +20,7 @@ class AuthRepository {
    * @returns {Promise<import('sequelize').Model> | Promise<undefined>} Found user model, or undefined if not found.
    */
   getUserByEmail = async (email) => {
-    const user = await this.Model.findOne({ where: { email } });
+    const user = await this.usersModel.findOne({ where: { email } });
     return user;
   };
 }
