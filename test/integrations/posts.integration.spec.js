@@ -183,17 +183,6 @@ describe('Posts Domain', () => {
     const posts = await supertest(app).get('/posts').send({});
     const postId = JSON.parse(posts.text).posts[0]['id'];
 
-    // accessToken 비우기
-    accessToken = '';
-
-    // 다른 계정 회원가입/로그인
-    await supertest(app).post('/auth/register').send(createPostRegister2);
-    const login = await supertest(app)
-      .post('/auth/login')
-      .send(createPostLogin2);
-
-    //accessToken에 Bearer 태그 붙이기
-    accessToken = 'Bearer ' + JSON.parse(login.text).accessToken;
     const response = await supertest(app)
       .delete('/posts/' + postId)
       .set('authorization', accessToken)
