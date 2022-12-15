@@ -8,7 +8,7 @@ const errorLogger = (err, req, res, next) => {
 
 const errorConverter = (err, req, res, next) => {
   if (err instanceof ApiError) next(err);
-  else if (err.isJoi) next(new ApiError('잘못된 요청입니다', 400));
+  else if (err.isJoi) next(new ApiError('잘못된 요청입니다.', 400));
   else next(new ApiError('알 수 없는 오류입니다.', 500));
 };
 
