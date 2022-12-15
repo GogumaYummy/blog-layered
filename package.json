@@ -9,7 +9,7 @@
     "test:silent": "cross-env NODE_ENV=test jest --silent --forceExit",
     "test:coverage": "cross-env NODE_ENV=test jest --coverage --forceExit",
     "test:unit": "cross-env NODE_ENV=test jest test/units --forceExit",
-    "test:integration": "cross-env NODE_ENV=test jest test/integration --forceExit"
+    "test:integration": "cross-env NODE_ENV=test jest test/integrations --forceExit"
   },
   "keywords": [],
   "author": "Suyoung Kim <110752019+alan-rla@users.noreply.github.com>",
