@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const api = require('./routes');
 const logger = require('./config/logger');
 const db = require('./models');
+const rateLimiter = require('./middlewares/rateLimiter');
 const {
   errorConverter,
   errorLogger,
@@ -26,10 +27,15 @@ db.sequelize
     logger.error(err.message);
   });
 
-app.use(morgan('dev', { stream: logger.stream }));
+app.use(
+  morgan(env === 'production' ? 'combined' : 'dev', { stream: logger.stream }),
+);
 app.use(express.json());
-app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(helmet());
+app.use(cors());
+app.use(rateLimiter);
 
 app.use('/', api);
 
