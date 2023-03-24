@@ -1,9 +1,15 @@
 const AuthService = require('../services/auth.service');
-const { ApiError } = require('../utils/apiError');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const {
+  registerRequestSchema,
+  loginRequestSchema,
+  loginResponseSchema,
+} = require('../validations/auth.validation');
 
 class AuthController {
   constructor() {
-    this.authService = new AuthService();
+    this.authService = new AuthService(bcrypt, jwt);
   }
   /**
    * A middleware to register.
@@ -13,11 +19,8 @@ class AuthController {
    */
   register = async (req, res, next) => {
     try {
-      const { email, nickname, password, confirm } = req.body;
-
-      //TODO: joi로 대체할 예정
-      if (!email || !nickname || !password || !confirm)
-        throw new ApiError('잘못된 요청입니다.', 400);
+      const { email, nickname, password, confirm } =
+        await registerRequestSchema.validateAsync(req.body);
 
       await this.authService.register(email, nickname, password, confirm);
 
@@ -35,12 +38,14 @@ class AuthController {
    */
   login = async (req, res, next) => {
     try {
-      const { email, password } = req.body;
-
-      //TODO: joi로 대체할 예정
-      if (!email || !password) throw new ApiError('잘못된 요청입니다.', 400);
+      const { email, password } = await loginRequestSchema.validateAsync(
+        req.body,
+      );
 
       const accessToken = await this.authService.login(email, password);
+
+      await loginResponseSchema.validateAsync(accessToken);
+
       res.status(200).json({ message: '로그인에 성공했습니다.', accessToken });
     } catch (err) {
       next(err);
